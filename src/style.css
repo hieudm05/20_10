@@ -279,8 +279,6 @@ html.js .scroll-reveal.is-revealed > .selected-wish,
 html.js .scroll-reveal.is-revealed > div > .section-overline,
 html.js .scroll-reveal.is-revealed > div > h2,
 html.js .scroll-reveal.is-revealed > .share-controls,
-html.js .scroll-reveal.is-revealed > .thank-you-copy,
-html.js .scroll-reveal.is-revealed > .thank-you-details,
 html.js .scroll-reveal.is-revealed > span {
   animation: text-arrive 0.72s cubic-bezier(0.2, 0.72, 0.22, 1) both;
 }
@@ -292,9 +290,6 @@ html.js .scroll-reveal.is-revealed > div > h2 {
 html.js .scroll-reveal.is-revealed > .flower-picker,
 html.js .scroll-reveal.is-revealed > .share-controls {
   animation-delay: 0.24s;
-}
-html.js .scroll-reveal.is-revealed > .thank-you-details {
-  animation-delay: 0.14s;
 }
 html.js .scroll-reveal.is-revealed > .selected-wish {
   animation-delay: 0.36s;
@@ -1195,196 +1190,6 @@ html.js .experience.is-complete .replay-button {
   padding: 12px;
   max-width: 100%;
 }
-.thank-you-panel {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px 24px;
-  max-width: 860px;
-  margin: 0 auto 34px;
-  border: 1px solid #e8c7a322;
-  border-radius: 5px;
-  padding: 17px 20px;
-  background: linear-gradient(120deg, #392737a8, #302332b8 58%, #3e2c3bb8);
-}
-.thank-you-copy {
-  position: relative;
-  z-index: 1;
-}
-.thank-you-copy .section-overline {
-  margin: 0 0 4px;
-  font-size: 8px;
-  letter-spacing: 1.8px;
-}
-.thank-you-copy h2 {
-  max-width: 30ch;
-  margin: 0;
-  color: #fff5eb;
-  font: normal clamp(18px, 2vw, 23px) / 1.3 var(--serif);
-  text-wrap: balance;
-}
-.thank-you-copy h2 em {
-  color: var(--rose);
-  font-weight: normal;
-}
-.thank-you-details {
-  position: relative;
-  z-index: 1;
-  margin-left: auto;
-}
-.thank-you-details[open] {
-  flex-basis: 100%;
-  margin-left: 0;
-  border-top: 1px solid #efcdbe24;
-  padding-top: 13px;
-}
-.thank-you-details summary {
-  display: flex;
-  min-height: 39px;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  border: 1px solid #efd2bd50;
-  border-radius: 24px;
-  padding: 7px 14px;
-  color: #f5ddcb;
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 600;
-  list-style: none;
-}
-.thank-you-details summary::-webkit-details-marker {
-  display: none;
-}
-.thank-you-details summary:hover {
-  border-color: #e8b5a485;
-  background: #ffffff0a;
-}
-.thank-you-details summary span {
-  color: var(--gold);
-  font-size: 17px;
-  font-weight: 400;
-}
-.thank-you-details[open] summary {
-  display: inline-flex;
-}
-.thank-you-form {
-  display: grid;
-  width: min(100%, 520px);
-  align-content: start;
-  gap: 7px;
-  margin-top: 13px;
-  animation: text-arrive 0.46s ease both;
-}
-.thank-you-description {
-  margin: 0 0 3px;
-  color: #cdbbc8;
-  font-size: 11px;
-  line-height: 1.6;
-}
-.thank-you-form label {
-  margin-top: 3px;
-  color: #fff1e5;
-  font-size: 12px;
-  font-weight: 600;
-}
-.thank-you-form label span {
-  color: #bfaeb9;
-  font-size: 11px;
-  font-weight: 400;
-}
-.thank-you-form input,
-.thank-you-form textarea {
-  width: 100%;
-  min-height: 46px;
-  border: 1px solid #ead3c137;
-  border-radius: 3px;
-  padding: 12px 13px;
-  background: #241b29a8;
-  color: #fff6ee;
-  font-size: 13px;
-  line-height: 1.55;
-  transition:
-    border-color 0.22s ease,
-    background-color 0.22s ease,
-    box-shadow 0.22s ease;
-}
-.thank-you-form input::placeholder,
-.thank-you-form textarea::placeholder {
-  color: #bbaab7a8;
-}
-.thank-you-form input:focus,
-.thank-you-form textarea:focus {
-  border-color: #e9bca288;
-  background: #281e2f;
-  box-shadow: 0 0 0 3px #e9bca211;
-}
-.thank-you-form textarea {
-  min-height: 86px;
-  resize: vertical;
-}
-.thank-you-form-meta {
-  display: flex;
-  justify-content: space-between;
-  color: #bbaab7;
-  font-size: 10px;
-}
-.spam-trap {
-  position: absolute !important;
-  left: -10000px !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
-}
-.turnstile-container {
-  min-height: 0;
-  overflow: hidden;
-}
-.turnstile-container:not(:empty) {
-  min-height: 65px;
-}
-.thank-you-submit {
-  display: inline-flex;
-  width: fit-content;
-  min-height: 40px;
-  align-items: center;
-  justify-content: center;
-  gap: 13px;
-  margin-top: 4px;
-  border: 1px solid #e5bca2;
-  border-radius: 3px;
-  padding: 11px 18px;
-  background: linear-gradient(110deg, #e6b69d, #f0d2ae);
-  color: #35212a;
-  font-size: 12px;
-  font-weight: 700;
-  box-shadow: 0 8px 25px #12091732;
-  transition:
-    filter 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-.thank-you-submit:hover:not(:disabled) {
-  filter: brightness(1.06);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px #12091745;
-}
-.thank-you-submit span {
-  font-size: 18px;
-  font-weight: 400;
-}
-.thank-you-status {
-  min-height: 1.6em;
-  margin: 1px 0 0;
-  color: #f1dba9;
-  font-size: 12px;
-  line-height: 1.6;
-}
-.thank-you-status.is-visible {
-  animation: text-arrive 0.48s ease both;
-}
 .site-footer {
   display: flex;
   align-items: center;
@@ -1465,9 +1270,6 @@ html:not(.js) .flower-wishes {
   .share-panel {
     justify-content: center;
     text-align: center;
-  }
-  .thank-you-panel {
-    gap: 12px 20px;
   }
   .share-controls {
     justify-content: center;
@@ -1619,26 +1421,6 @@ html:not(.js) .flower-wishes {
   }
   .share-panel {
     padding: 28px 0;
-  }
-  .thank-you-panel {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    margin: 5px auto 30px;
-    padding: 15px 15px 14px;
-  }
-  .thank-you-copy h2 {
-    max-width: none;
-    font-size: 22px;
-  }
-  .thank-you-details {
-    margin-left: 0;
-  }
-  .thank-you-details summary {
-    justify-content: space-between;
-  }
-  .thank-you-form textarea {
-    min-height: 82px;
   }
   .share-controls {
     width: 100%;

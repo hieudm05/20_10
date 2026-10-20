@@ -31,7 +31,6 @@ npm run preview
 | `src/content.ts`               | Lời chúc từng bông và nội dung chia sẻ                                                                               |
 | `src/audio.ts`, `src/share.ts` | Nhạc nền MP3; Web Share, Clipboard và phương án sao chép thủ công                                                    |
 | `tests/card.spec.ts`           | Kiểm tra hành trình, viewport, thao tác và tình huống dự phòng                                                       |
-| `functions/api/thank-you.ts`   | Cloudflare Pages Function xác minh Turnstile và gửi lời nhắn bằng Resend; không dùng database                        |
 
 Nội dung thư và chữ ký là HTML thật trong `index.html`. Để sửa lời chúc ngắn của từng bông, chỉnh `src/content.ts`.
 
@@ -67,18 +66,3 @@ Chưa kiểm tra trên thiết bị iPhone/Android thật hoặc Safari/Firefox.
 Trang tạo bản build bằng `npm run build` với thư mục đầu ra `dist`. Nếu Pages đang kết nối GitHub, mỗi lần push lên nhánh production được chọn trong Cloudflare sẽ tự build và cập nhật website. Repo này dùng nhánh `main`; kiểm tra nhánh production tại Workers & Pages → project → Settings → Builds & deployments.
 
 Trước khi push, có thể kiểm tra bản build local bằng `npm run build`. Sau đó stage các file đã sửa, commit và push lên nhánh production. Các biến bí mật phải được lưu trong Cloudflare Pages → Settings → Variables and Secrets; không commit chúng vào Git.
-
-## Lời nhắn gửi Hiếu qua email
-
-Biểu mẫu được thu gọn bên dưới thiệp. Nội dung thiệp và liên kết chia sẻ dùng lời chúc chung để dành cho tất cả mọi người. Lời nhắn gửi Hiếu đi qua Cloudflare Pages Function tới Resend. Website không lưu nội dung vào database; dịch vụ email sẽ chuyển thư đến hộp thư được cấu hình.
-
-Để bật gửi thật:
-
-1. Host project bằng Cloudflare Pages để route `/api/thank-you` chạy từ `functions/api/thank-you.ts`. Thiết lập build command `npm ci && npm run build` và output directory `dist`.
-2. Tạo widget Turnstile cho domain website. Đặt site key công khai vào biến build `VITE_TURNSTILE_SITE_KEY` trong Cloudflare Pages; khi chạy local có thể chép `.env.example` thành `.env.local`.
-3. Tạo API key Resend chỉ có quyền gửi email và xác minh domain gửi trong Resend. Không dùng địa chỉ gửi chưa xác minh.
-4. Trong Cloudflare Pages → Settings → Variables and Secrets, đặt `RESEND_API_KEY` và `TURNSTILE_SECRET_KEY` dưới dạng secret; đặt `THANKS_TO_EMAIL` thành email nhận và `EMAIL_FROM` thành địa chỉ gửi thuộc domain đã xác minh, ví dụ `Hiếu <loinhang@tenmiencuaban.vn>`.
-5. Tạo rule giới hạn yêu cầu `POST /api/thank-you` theo IP trong Cloudflare. Function cũng có honeypot, kiểm tra cùng origin, xác minh token Turnstile phía máy chủ và giới hạn tạm thời theo IP trong mỗi instance.
-6. Build/deploy lại để các biến có hiệu lực. Không đưa API key hay Turnstile secret vào `.env.local` của frontend hoặc commit vào Git.
-
-Địa chỉ email nhận và domain host chưa được cung cấp nên các biến dịch vụ chưa được điền, và biểu mẫu chưa thể gửi thư cho đến khi cấu hình xong. Nếu site hiện đang host ở nơi khác ngoài Cloudflare Pages, cần chuyển function `/api/thank-you` sang backend tương ứng; biến bí mật Resend phải luôn ở phía máy chủ.

@@ -421,67 +421,6 @@
             ><input id="share-url" type="text" readonly />
           </div>
         </div>
-
-        <section
-          id="thank-you"
-          class="thank-you-panel scroll-reveal"
-          aria-labelledby="thank-you-title"
-        >
-          <div class="thank-you-copy">
-            <p class="section-overline">MỘT LỜI NHẮN NHỎ</p>
-            <h2 id="thank-you-title">Muốn nhắn Hiếu <em>một điều gì đó?</em></h2>
-          </div>
-          <details id="thank-you-details" class="thank-you-details">
-            <summary>Gửi Hiếu một lời nhắn <span aria-hidden="true">＋</span></summary>
-            <form id="thank-you-form" class="thank-you-form">
-              <p class="thank-you-description">
-                Lời nhắn sẽ được gửi riêng qua email và không lưu vào cơ sở dữ liệu.
-              </p>
-              <label for="thank-you-name">Tên của bạn <span>(không bắt buộc)</span></label>
-              <input
-                id="thank-you-name"
-                name="name"
-                type="text"
-                maxlength="60"
-                autocomplete="nickname"
-                placeholder="Bạn muốn được gọi là gì?"
-              />
-              <label for="thank-you-message">Lời nhắn gửi Hiếu</label>
-              <textarea
-                id="thank-you-message"
-                name="message"
-                rows="3"
-                minlength="4"
-                maxlength="600"
-                required
-                placeholder="Viết vài dòng từ trái tim…"
-              ></textarea>
-              <label class="spam-trap" for="thank-you-website">Để trống ô này</label>
-              <input
-                id="thank-you-website"
-                class="spam-trap"
-                name="website"
-                type="text"
-                tabindex="-1"
-                autocomplete="off"
-              />
-              <div id="thank-you-turnstile" class="turnstile-container"></div>
-              <div class="thank-you-form-meta">
-                <span>Chỉ Hiếu nhận được lời nhắn này</span>
-                <span id="thank-you-count" aria-live="off">0/600</span>
-              </div>
-              <button id="thank-you-submit" class="thank-you-submit" type="submit">
-                Gửi lời nhắn <span aria-hidden="true">↗</span>
-              </button>
-              <p
-                id="thank-you-status"
-                class="thank-you-status"
-                role="status"
-                aria-live="polite"
-              ></p>
-            </form>
-          </details>
-        </section>
       </section>
       <noscript
         ><p class="noscript-message wrap">
