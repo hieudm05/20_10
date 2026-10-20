@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#241628" />
+    <script>
+      document.documentElement.classList.add('page-loading');
+    </script>
+    <style>
+      .page-loader[hidden] {
+        display: none;
+      }
+      .page-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        background: #241628;
+        color: #fff7e9;
+      }
+    </style>
+    <title>Một bó hoa, một lời thương · Chúc mừng ngày 20/10 từ Hiếu</title>
+    <meta
+      name="description"
+      content="Một bó hoa và lá thư gửi đến bạn nhân Ngày Phụ nữ Việt Nam 20/10. Chúc bạn bình an, tự tin và luôn được yêu thương."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:title" content="Một bó hoa, một lời thương · 20/10" />
+    <meta
+      property="og:description"
+      content="Chạm vào bó hoa để nhận một lá thư và những lời chúc ngày Phụ nữ Việt Nam 20/10 từ Hiếu."
+    />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  </head>
+  <body>
+    <div id="page-loader" class="page-loader" hidden role="status" aria-live="polite">
+      <div class="page-loader-inner">
+        <div class="page-loader-mark" aria-hidden="true">
+          <svg viewBox="0 0 120 120" focusable="false">
+            <circle class="loader-orbit" cx="60" cy="60" r="47" />
+            <path
+              class="loader-stem"
+              d="M60 72v27m0-12c-10-12-19-13-26-10 8 11 16 14 26 13m0-10c8-12 17-13 24-10-7 10-15 14-24 13"
+            />
+            <g class="loader-blossom">
+              <path d="M60 57C55 48 45 44 49 36c3-6 9-2 11 3 2-8 10-9 12-3 3 7-5 13-12 21Z" />
+              <path
+                d="M60 57c-5-9-15-13-11-21 3-6 9-2 11 3 2-8 10-9 12-3 3 7-5 13-12 21Z"
+                transform="rotate(72 60 50)"
+              />
+              <path
+                d="M60 57c-5-9-15-13-11-21 3-6 9-2 11 3 2-8 10-9 12-3 3 7-5 13-12 21Z"
+                transform="rotate(144 60 50)"
+              />
+              <path
+                d="M60 57c-5-9-15-13-11-21 3-6 9-2 11 3 2-8 10-9 12-3 3 7-5 13-12 21Z"
+                transform="rotate(216 60 50)"
+              />
+              <path
+                d="M60 57c-5-9-15-13-11-21 3-6 9-2 11 3 2-8 10-9 12-3 3 7-5 13-12 21Z"
+                transform="rotate(288 60 50)"
+              />
+              <circle cx="60" cy="51" r="3.5" />
+            </g>
+          </svg>
+        </div>
+        <p class="page-loader-date">NGÀY PHỤ NỮ VIỆT NAM · 20/10</p>
+        <p class="page-loader-title">Một bó hoa,<br /><em>một lời thương.</em></p>
+        <p class="page-loader-caption">Hiếu đang gói một lời chúc cho bạn</p>
+        <div class="page-loader-progress" aria-hidden="true"><span></span></div>
+      </div>
+    </div>
+    <script>
+      if (document.documentElement.classList.contains('page-loading')) {
+        document.getElementById('page-loader')?.removeAttribute('hidden');
+      }
+    </script>
+    <a class="skip-link" href="#main">Đến nội dung chính</a>
+    <svg class="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <symbol id="i-sound" viewBox="0 0 24 24">
+          <path d="m11 5-5 4H3v6h3l5 4V5Zm4 4a5 5 0 0 1 0 6m3-9a9 9 0 0 1 0 12" />
+        </symbol>
+        <symbol id="i-sound-off" viewBox="0 0 24 24">
+          <path d="m11 5-5 4H3v6h3l5 4V5Zm5 4 5 6m0-6-5 6" />
+        </symbol>
+        <symbol id="i-share" viewBox="0 0 24 24">
+          <path d="M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7" />
+        </symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24">
+          <rect x="8" y="8" width="12" height="12" rx="2" />
+          <path d="M15 8V4H4v11h4" />
+        </symbol>
+        <symbol id="i-spark" viewBox="0 0 24 24">
+          <path d="M12 1.5 14.5 9.5 22.5 12l-8 2.5-2.5 8-2.5-8L1.5 12l8-2.5z" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="grain" aria-hidden="true"></div>
+    <header class="site-header wrap" data-page-intro="header">
+      <a class="brand" href="#main" aria-label="Về đầu trang"
+        ><span class="brand-mark" aria-hidden="true">✳</span
+        ><span>Một lời thương <em>từ Hiếu.</em></span></a
+      >
+      <div class="header-right">
+        <span class="header-date">20 THÁNG 10</span>
+        <button
+          id="sound-toggle"
+          class="sound-button requires-js"
+          type="button"
+          aria-label="Bật nhạc"
+          aria-pressed="false"
+        >
+          <svg class="icon" aria-hidden="true"><use id="sound-icon" href="#i-sound-off" /></svg
+          ><span id="sound-label">Bật nhạc</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section
+        id="experience"
+        class="experience wrap"
+        aria-labelledby="main-title"
+        data-scene-state="bouquet_idle"
+      >
+        <div class="hero-heading" data-page-intro="heading">
+          <p class="eyebrow">
+            <span class="eyebrow-line"></span>NGÀY PHỤ NỮ VIỆT NAM · 20/10<span
+              class="eyebrow-line"
+            ></span>
+          </p>
+          <h1 id="main-title">Một bó hoa.<br /><em>Một lời thương.</em></h1>
+          <p class="hero-intro">Có những điều muốn nói, Hiếu đã gói trong bó hoa này.</p>
+        </div>
+
+        <div id="gift-stage" class="gift-stage" data-page-intro="gift">
+          <div class="stage-light" aria-hidden="true"></div>
+          <div
+            id="scene-root"
+            class="scene-root"
+            role="img"
+            aria-label="Bó hoa sữa Alstonia scholaris ba chiều, với nhiều cành lá xanh đậm và cụm hoa nhỏ màu trắng kem, được gói làm quà"
+          >
+            <div id="scene-fallback" class="scene-fallback" aria-hidden="true">
+              <svg class="fallback-bouquet" viewBox="0 0 440 430" focusable="false">
+                <defs>
+                  <g id="milkflower-leaf">
+                    <path
+                      d="M-24 0C-12-9 11-9 25 0 11 9-12 9-24 0Z"
+                      fill="#31543b"
+                      stroke="#213c2d"
+                      stroke-width="1"
+                    />
+                    <path d="M-19 0H20" fill="none" stroke="#8aa07a" stroke-width="1" />
+                  </g>
+                  <g id="milkflower-floret">
+                    <path
+                      d="M0-4.8c1.3-2 3.3-1.1 2.3 1.1 2.5-1.3 3.8.6 1.4 2-.3 2.8-2.4 3.2-3.7 1.3-1.4 2.2-3.4 1.2-2.2-1.1-2.4 1.4-4-.2-1.6-2-.1-2.6 1.8-3.7 3.8-1.3Z"
+                      fill="#f5f5df"
+                      stroke="#fff9e9"
+                      stroke-width=".6"
+                    />
+                    <circle cy=".1" r=".7" fill="#d7d58d" />
+                  </g>
+                  <g id="milkflower-cluster">
+                    <use href="#milkflower-floret" x="-7" y="-5" />
+                    <use href="#milkflower-floret" x="0" y="-8" />
+                    <use href="#milkflower-floret" x="7" y="-5" />
+                    <use href="#milkflower-floret" x="-10" y="1" />
+                    <use href="#milkflower-floret" x="-3" y="0" />
+                    <use href="#milkflower-floret" x="4" y="1" />
+                    <use href="#milkflower-floret" x="10" y="2" />
+                    <use href="#milkflower-floret" x="-6" y="7" />
+                    <use href="#milkflower-floret" x="2" y="8" />
+                  </g>
+                  <g id="milkflower-branch" fill="none" stroke="#526b43" stroke-linecap="round">
+                    <path d="M0 0C-12-74 13-147 0-236" stroke-width="3.2" />
+                    <path
+                      d="M0-197c-18-18-30-33-39-50M0-204c7-20 7-34 0-52M0-197c18-18 30-33 39-50"
+                      stroke-width="1.8"
+                    />
+                    <g stroke="none">
+                      <use
+                        href="#milkflower-leaf"
+                        transform="translate(-5-54)rotate(-42)scale(.82)"
+                      />
+                      <use href="#milkflower-leaf" transform="translate(7-83)rotate(37)scale(.9)" />
+                      <use
+                        href="#milkflower-leaf"
+                        transform="translate(-5-113)rotate(-38)scale(.86)"
+                      />
+                      <use
+                        href="#milkflower-leaf"
+                        transform="translate(5-145)rotate(43)scale(.9)"
+                      />
+                      <use
+                        href="#milkflower-leaf"
+                        transform="translate(-2-174)rotate(-32)scale(.78)"
+                      />
+                      <use href="#milkflower-cluster" transform="translate(-44-255)scale(.82)" />
+                      <use href="#milkflower-cluster" transform="translate(0-265)scale(.86)" />
+                      <use href="#milkflower-cluster" transform="translate(44-255)scale(.82)" />
+                    </g>
+                  </g>
+                </defs>
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(207 365)rotate(-25)scale(.76 .83)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(217 370)rotate(-19)scale(.82 .88)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(225 372)rotate(-13)scale(.78 .93)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(232 369)rotate(-8)scale(.88 .9)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(239 373)rotate(-3)scale(.82 .95)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(200 370)rotate(21)scale(.72 .82)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(213 373)rotate(15)scale(.87 .86)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(229 374)rotate(10)scale(.77 .9)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(243 371)rotate(5)scale(.9 .84)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(250 373)rotate(19)scale(.74 .9)"
+                />
+                <use
+                  href="#milkflower-branch"
+                  transform="translate(220 374)rotate(-28)scale(.74 .88)"
+                />
+              </svg>
+              <div class="fallback-envelope"><span>20/10</span></div>
+              <div class="fallback-wrap wrap-left"></div>
+              <div class="fallback-wrap wrap-right"></div>
+              <div class="fallback-ribbon"><i></i><i></i><span></span></div>
+            </div>
+          </div>
+          <p id="bouquet-hint" class="bouquet-hint">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-spark" /></svg>
+            <span>Có một lời chúc đang chờ bạn — chạm nhẹ vào bó hoa</span>
+          </p>
+          <div id="falling-wish" class="falling-wish" aria-live="polite" aria-atomic="true"></div>
+          <div id="flower-hotspots" class="flower-hotspots requires-js" hidden>
+            <button
+              class="flower-hotspot hotspot-a"
+              data-flower="0"
+              type="button"
+              aria-label="Chạm bông hoa Bình an"
+            ></button>
+            <button
+              class="flower-hotspot hotspot-b"
+              data-flower="1"
+              type="button"
+              aria-label="Chạm bông hoa Tự tin"
+            ></button>
+            <button
+              class="flower-hotspot hotspot-c"
+              data-flower="2"
+              type="button"
+              aria-label="Chạm bông hoa Được yêu thương"
+            ></button>
+            <button
+              class="flower-hotspot hotspot-d"
+              data-flower="3"
+              type="button"
+              aria-label="Chạm bông hoa Tỏa sáng"
+            ></button>
+            <button
+              class="flower-hotspot hotspot-e"
+              data-flower="4"
+              type="button"
+              aria-label="Chạm bông hoa Được là mình"
+            ></button>
+          </div>
+
+          <article
+            id="letter-card"
+            class="letter-card"
+            aria-labelledby="letter-title"
+            tabindex="-1"
+          >
+            <div class="letter-top"><span>GỬI ĐẾN BẠN</span><span>20 · 10</span></div>
+            <div class="letter-ornament" aria-hidden="true">
+              <span></span><svg class="icon"><use href="#i-spark" /></svg><span></span>
+            </div>
+            <h2 id="letter-title">Một ngày thật đẹp,<br /><em>dành cho bạn.</em></h2>
+            <div class="letter-body">
+              <p>Nhân Ngày Phụ nữ Việt Nam 20/10, Hiếu gửi bạn lời chúc thật ấm áp.</p>
+              <p>
+                Mong bạn luôn mạnh khỏe, bình an, tự tin và có thật nhiều niềm vui. Mong bạn được
+                yêu thương, lắng nghe, trân trọng; được sống theo cách mình mong muốn, và mỗi ngày
+                đều có điều khiến bạn mỉm cười.
+              </p>
+              <p>
+                Cảm ơn vì đã làm cho thế giới quanh mình dịu dàng, vững vàng và tươi đẹp hơn. Chúc
+                mừng ngày 20/10!
+              </p>
+            </div>
+            <p class="signature">Thân mến, <em>Hiếu</em></p>
+            <div class="letter-footer">
+              <span>MỘT BÓ HOA, MỘT LỜI THƯƠNG</span><span aria-hidden="true">✳</span>
+            </div>
+          </article>
+        </div>
+
+        <button id="replay-sequence" class="replay-button requires-js" type="button" hidden>
+          Xem lại khoảnh khắc
+        </button>
+
+        <section
+          id="flower-wishes"
+          class="flower-wishes scroll-reveal"
+          aria-labelledby="wishes-title"
+        >
+          <p class="section-overline">MỖI BÔNG HOA LÀ MỘT LỜI CHÚC</p>
+          <h2 id="wishes-title">Còn những điều đẹp nữa <em>để gửi bạn.</em></h2>
+          <p class="flower-instruction">Chạm vào từng bông hoa để đọc thêm một lời chúc.</p>
+          <div class="flower-picker requires-js" role="group" aria-label="Chọn một bông hoa">
+            <button
+              class="flower-button flower-pink"
+              type="button"
+              data-flower="0"
+              aria-label="Bông hoa Bình an"
+            >
+              <span class="little-flower" aria-hidden="true"
+                ><i></i><i></i><i></i><i></i><i></i></span
+              ><span>Bình an</span>
+            </button>
+            <button
+              class="flower-button flower-peach"
+              type="button"
+              data-flower="1"
+              aria-label="Bông hoa Tự tin"
+            >
+              <span class="little-flower" aria-hidden="true"
+                ><i></i><i></i><i></i><i></i><i></i></span
+              ><span>Tự tin</span>
+            </button>
+            <button
+              class="flower-button flower-cream"
+              type="button"
+              data-flower="2"
+              aria-label="Bông hoa Được yêu thương"
+            >
+              <span class="little-flower" aria-hidden="true"
+                ><i></i><i></i><i></i><i></i><i></i></span
+              ><span>Được yêu thương</span>
+            </button>
+            <button
+              class="flower-button flower-rose"
+              type="button"
+              data-flower="3"
+              aria-label="Bông hoa Tỏa sáng"
+            >
+              <span class="little-flower" aria-hidden="true"
+                ><i></i><i></i><i></i><i></i><i></i></span
+              ><span>Tỏa sáng</span>
+            </button>
+            <button
+              class="flower-button flower-sage"
+              type="button"
+              data-flower="4"
+              aria-label="Bông hoa Được là mình"
+            >
+              <span class="little-flower" aria-hidden="true"
+                ><i></i><i></i><i></i><i></i><i></i></span
+              ><span>Được là mình</span>
+            </button>
+          </div>
+          <p
+            id="selected-wish"
+            class="selected-wish"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            Mong bạn luôn có một nơi bình yên để trở về.
+          </p>
+        </section>
+
+        <div class="share-panel requires-js scroll-reveal">
+          <div>
+            <p class="section-overline">GỬI ĐI MỘT CHÚT DỊU DÀNG</p>
+            <h2>Để lời thương<br /><em>đến với một người nữa.</em></h2>
+          </div>
+          <div class="share-controls">
+            <button id="share-card" class="share-button primary" type="button">
+              <svg class="icon" aria-hidden="true"><use href="#i-share" /></svg>Chia sẻ thiệp
+            </button>
+            <button id="copy-link" class="share-button secondary" type="button">
+              <svg class="icon" aria-hidden="true"><use href="#i-copy" /></svg>Sao chép liên kết
+            </button>
+          </div>
+          <div id="manual-copy" class="manual-copy" hidden>
+            <label for="share-url">Bạn có thể sao chép liên kết này:</label
+            ><input id="share-url" type="text" readonly />
+          </div>
+        </div>
+
+        <section
+          id="thank-you"
+          class="thank-you-panel scroll-reveal"
+          aria-labelledby="thank-you-title"
+        >
+          <div class="thank-you-copy">
+            <p class="section-overline">MỘT LỜI NHẮN NHỎ</p>
+            <h2 id="thank-you-title">Muốn nhắn Hiếu <em>một điều gì đó?</em></h2>
+          </div>
+          <details id="thank-you-details" class="thank-you-details">
+            <summary>Gửi Hiếu một lời nhắn <span aria-hidden="true">＋</span></summary>
+            <form id="thank-you-form" class="thank-you-form">
+              <p class="thank-you-description">
+                Lời nhắn sẽ được gửi riêng qua email và không lưu vào cơ sở dữ liệu.
+              </p>
+              <label for="thank-you-name">Tên của bạn <span>(không bắt buộc)</span></label>
+              <input
+                id="thank-you-name"
+                name="name"
+                type="text"
+                maxlength="60"
+                autocomplete="nickname"
+                placeholder="Bạn muốn được gọi là gì?"
+              />
+              <label for="thank-you-message">Lời nhắn gửi Hiếu</label>
+              <textarea
+                id="thank-you-message"
+                name="message"
+                rows="3"
+                minlength="4"
+                maxlength="600"
+                required
+                placeholder="Viết vài dòng từ trái tim…"
+              ></textarea>
+              <label class="spam-trap" for="thank-you-website">Để trống ô này</label>
+              <input
+                id="thank-you-website"
+                class="spam-trap"
+                name="website"
+                type="text"
+                tabindex="-1"
+                autocomplete="off"
+              />
+              <div id="thank-you-turnstile" class="turnstile-container"></div>
+              <div class="thank-you-form-meta">
+                <span>Chỉ Hiếu nhận được lời nhắn này</span>
+                <span id="thank-you-count" aria-live="off">0/600</span>
+              </div>
+              <button id="thank-you-submit" class="thank-you-submit" type="submit">
+                Gửi lời nhắn <span aria-hidden="true">↗</span>
+              </button>
+              <p
+                id="thank-you-status"
+                class="thank-you-status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </form>
+          </details>
+        </section>
+      </section>
+      <noscript
+        ><p class="noscript-message wrap">
+          Thiệp vẫn có thể đọc bên dưới. Bật JavaScript để xem bó hoa 3D và chuỗi mở thư.
+        </p></noscript
+      >
+    </main>
+    <footer class="site-footer wrap scroll-reveal">
+      <span>Ngày Phụ nữ Việt Nam 20/10 · Viết bằng yêu thương</span
+      ><span>Thân mến, <em>Hiếu</em></span>
+    </footer>
+    <p id="status" class="status-toast" role="status" aria-live="polite" aria-atomic="true"></p>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
