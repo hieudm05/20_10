@@ -42,7 +42,7 @@ Nội dung thư và chữ ký là HTML thật trong `index.html`. Để sửa l�
 - Hoa con và lá dùng InstancedMesh; mỗi cành gộp các ống thân thành một mesh tĩnh riêng. Điện thoại dùng ít hoa con/lá hơn và ít đoạn hình học hơn, cùng giới hạn pixel ratio 1.2; desktop tối đa 1.5. Cảnh chạy tối đa 30 khung hình/giây và tạm ngừng khi tab bị ẩn hoặc sân khấu nằm ngoài màn hình.
 - Sau khi thư mở, hoa ở lại quanh thư. Các vùng chạm trên sân khấu và hàng nút bên dưới đều gọi đúng lời chúc; hàng nút cũng dùng được bằng bàn phím.
 - Màn mở đầu có chuyển động nền chậm; khử răng cưa tắt trên màn nhỏ.
-- Với `prefers-reduced-motion`, một lần chạm hiển thị ngay thư và các bông hoa ở vị trí cuối. Nếu chế độ thay đổi giữa chuỗi, cảnh hoàn tất ngay.
+- Với `prefers-reduced-motion`, một lần chạm chạy chuỗi rút gọn và giảm chuyển động nền; giấy gói vẫn bung, phong thư trượt ra hết, lá thư mở trọn và lời chúc hiện lần lượt với chuyển động nhỏ. Sau đó, 18 cụm hoa rơi một lượt trên desktop hoặc 12 cụm trên điện thoại rồi dừng. Nếu chế độ thay đổi giữa chuỗi, cảnh hoàn tất ngay.
 - Nếu WebGL không có, mất context hoặc chunk 3D không tải được, bố cục CSS và thư HTML vẫn hoạt động. Khi tắt JavaScript, thư vẫn đọc được.
 - Trang thử phát bản nhạc tổng hợp nhỏ nhẹ khi mở. Nếu trình duyệt chặn autoplay, nút luôn hiện “Bật nhạc”; khi phát nhạc, nút đổi thành “Tắt nhạc”. Nhạc tạm dừng khi rời tab và thử tiếp tục khi quay lại nếu trước đó đang bật.
 - Font Lora tiếng Việt được lưu trong bản build; không gọi dịch vụ font, ảnh, nhạc hoặc analytics bên ngoài.
@@ -62,7 +62,11 @@ Các bài kiểm tra bao gồm chuỗi 3D tự chạy sau một lần chạm; s�
 
 Chưa kiểm tra trên thiết bị iPhone/Android thật hoặc Safari/Firefox. Web Share và Clipboard thường cần HTTPS khi đưa lên mạng. Phần Three.js tải riêng sau mã giao diện đầu tiên, khoảng 140 KB gzip. Giấy phép font Lora đi kèm tại `public/lora-license.txt`.
 
-Project chỉ nằm trong workspace; chưa deploy, publish hoặc push Git.
+## Deploy lên Cloudflare Pages
+
+Trang tạo bản build bằng `npm run build` với thư mục đầu ra `dist`. Nếu Pages đang kết nối GitHub, mỗi lần push lên nhánh production được chọn trong Cloudflare sẽ tự build và cập nhật website. Repo này dùng nhánh `main`; kiểm tra nhánh production tại Workers & Pages → project → Settings → Builds & deployments.
+
+Trước khi push, có thể kiểm tra bản build local bằng `npm run build`. Sau đó stage các file đã sửa, commit và push lên nhánh production. Các biến bí mật phải được lưu trong Cloudflare Pages → Settings → Variables and Secrets; không commit chúng vào Git.
 
 ## Lời nhắn gửi Hiếu qua email
 

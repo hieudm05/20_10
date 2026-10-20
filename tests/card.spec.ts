@@ -52,8 +52,69 @@ async function openWithReducedMotion(page: Page): Promise<void> {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await page.getByRole('button', { name: /Chạm vào bó hoa/ }).click();
-  await expect(page.locator('#experience')).toHaveClass(/is-complete/);
+  await expect(page.locator('#experience')).toHaveAttribute('data-scene-state', 'letter_open', {
+    timeout: 7000,
+  });
+  await expect(page.locator('#experience')).toHaveClass(/is-complete/, { timeout: 3500 });
 }
+
+test('laptop still shows a gentle entrance and stepped sequence with reduced motion', async ({
+  page,
+}, testInfo) => {
+  await page.setViewportSize({ width: 1366, height: 768 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await expect(page.locator('#scene-root canvas')).toBeVisible();
+  await expect(page.locator('#page-loader')).toBeVisible();
+  await expect(page.locator('html')).toHaveClass(/page-entering/, { timeout: 5000 });
+  const introDuration = await page
+    .locator('.hero-heading h1')
+    .evaluate((heading) => getComputedStyle(heading).animationDuration);
+  expect(introDuration).toBe('0.55s');
+
+  await page.getByRole('button', { name: /Chạm vào bó hoa/ }).click();
+  await expect(page.locator('#experience')).toHaveAttribute(
+    'data-scene-state',
+    'flowers_separate',
+    {
+      timeout: 1500,
+    },
+  );
+  await page.waitForTimeout(500);
+  await page.screenshot({
+    path: testInfo.outputPath('laptop-reduced-motion-separating.png'),
+    fullPage: false,
+  });
+  await expect(page.locator('#experience')).toHaveAttribute('data-scene-state', 'letter_open', {
+    timeout: 11000,
+  });
+  await expect(page.locator('#scene-root')).toHaveAttribute(
+    'data-alstonia-reduced-falling-clusters',
+    '18',
+  );
+  await expect(page.locator('#scene-root')).toHaveAttribute('data-alstonia-envelope-slide', '1.00');
+  await expect(page.locator('#scene-root')).toHaveAttribute('data-alstonia-letter-unfold', '1.00');
+  const letterTransition = await page
+    .locator('#letter-card')
+    .evaluate((letter) => getComputedStyle(letter).transitionProperty);
+  expect(letterTransition).toContain('transform');
+  const paragraphAnimation = await page
+    .locator('.letter-body p')
+    .first()
+    .evaluate((paragraph) => getComputedStyle(paragraph).animationName);
+  expect(paragraphAnimation).toBe('reduced-letter-copy-reveal');
+  await page.waitForTimeout(180);
+  await page.screenshot({
+    path: testInfo.outputPath('laptop-letter-opening-reduced-motion.png'),
+    fullPage: false,
+  });
+  await page.waitForTimeout(2000);
+  await page.screenshot({
+    path: testInfo.outputPath('laptop-reduced-motion-letter-and-falling-flowers.png'),
+    fullPage: true,
+  });
+  await expect(page.locator('#experience')).toHaveClass(/is-complete/, { timeout: 3500 });
+});
 
 test('one tap runs every step in order and finishes without another action', async ({ page }) => {
   const errors: string[] = [];
@@ -73,7 +134,7 @@ test('one tap runs every step in order and finishes without another action', asy
   await expect(page.locator('#experience')).toHaveClass(/is-envelope/, { timeout: 2000 });
   await expect(page.locator('#experience')).toHaveClass(/is-seal/, { timeout: 2000 });
   await page.screenshot({ path: test.info().outputPath('seal.png'), fullPage: true });
-  await expect(page.locator('#experience')).toHaveClass(/is-letter-open/, { timeout: 2000 });
+  await expect(page.locator('#experience')).toHaveClass(/is-letter-open/, { timeout: 4000 });
   await expect(page.locator('#experience')).toHaveClass(/is-complete/, { timeout: 6000 });
   await expect(page.locator('.letter-body p')).toHaveCount(3);
   await expect(page.locator('.signature')).toContainText('Thân mến, Hiếu');
@@ -128,6 +189,15 @@ test('responsive layout and snapshots on portrait and landscape screens', async 
     fullPage: true,
   });
   await openWithReducedMotion(page);
+  await expect(page.locator('#scene-root')).toHaveAttribute(
+    'data-alstonia-reduced-falling-clusters',
+    '12',
+  );
+  await page.waitForTimeout(700);
+  await page.screenshot({
+    path: testInfo.outputPath('mobile-reduced-motion-letter-and-falling-flowers.png'),
+    fullPage: true,
+  });
   for (const [width, height] of [
     [320, 568],
     [360, 800],

@@ -823,6 +823,14 @@ html.js .experience.is-complete .replay-button {
   pointer-events: auto;
   transform: translate(-50%, -50%) scale(1);
 }
+@media (min-width: 601px) and (prefers-reduced-motion: no-preference) {
+  .letter-card {
+    transition:
+      opacity 1.4s ease,
+      transform 1.4s cubic-bezier(0.2, 0.72, 0.22, 1),
+      visibility 1.4s;
+  }
+}
 .letter-card:focus {
   outline: none;
 }
@@ -1693,14 +1701,14 @@ html:not(.js) .flower-wishes {
   }
   .page-loader {
     transition:
-      opacity 0.24s ease,
-      visibility 0s linear 0.24s !important;
+      opacity 0.48s ease,
+      visibility 0s linear 0.48s !important;
   }
   .page-loader-date,
   .page-loader-title,
   .page-loader-caption,
   .page-loader-progress {
-    animation: reduced-fade-in 0.28s ease both !important;
+    animation: reduced-fade-in 0.5s ease both !important;
   }
   .page-loader-title {
     animation-delay: 0.06s !important;
@@ -1719,7 +1727,7 @@ html:not(.js) .flower-wishes {
   .page-entering .hero-heading h1,
   .page-entering .hero-intro,
   .page-entering .bouquet-hint {
-    animation: reduced-fade-in 0.3s ease both !important;
+    animation: reduced-fade-in 0.55s ease both !important;
   }
   .page-entering [data-page-intro='heading'],
   .page-entering .header-date,
@@ -1737,35 +1745,43 @@ html:not(.js) .flower-wishes {
   }
   html.js .scroll-reveal {
     transform: none;
-    transition: opacity 0.28s ease !important;
+    transition: opacity 0.5s ease !important;
   }
   html.js .scroll-reveal.is-revealed {
     opacity: 1;
     transform: none;
   }
   html.js .scroll-reveal.is-revealed :is(h2, p, button, span) {
-    animation: reduced-fade-in 0.24s ease both !important;
+    animation: reduced-fade-in 0.42s ease both !important;
   }
   .scene-root canvas {
-    animation: reduced-fade-in 0.28s ease both !important;
+    animation: reduced-fade-in 0.5s ease both !important;
+  }
+  .letter-card {
+    transform: translate(-50%, calc(-50% + 14px)) scale(0.99);
+    transition:
+      opacity 0.55s ease,
+      transform 0.65s cubic-bezier(0.2, 0.72, 0.22, 1),
+      visibility 0s linear 0.55s !important;
   }
   .scene-fallback {
     transition:
-      opacity 0.28s ease,
-      visibility 0s linear 0.28s !important;
+      opacity 0.5s ease,
+      visibility 0s linear 0.5s !important;
   }
   .falling-wish {
     transform: translateX(-50%);
     filter: none;
-    transition: opacity 0.2s ease !important;
+    transition: opacity 0.36s ease !important;
   }
   .falling-wish.is-visible {
     transform: translateX(-50%);
   }
   .experience.is-letter-open .letter-card {
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(1);
     transition:
-      opacity 0.28s ease,
+      opacity 0.55s ease,
+      transform 0.65s cubic-bezier(0.2, 0.72, 0.22, 1),
       visibility 0s linear !important;
   }
   .experience.is-letter-open .letter-top,
@@ -1775,16 +1791,88 @@ html:not(.js) .flower-wishes {
   .experience.is-letter-open .signature,
   .experience.is-letter-open .letter-footer,
   html.js .experience.is-complete .replay-button {
-    animation: reduced-fade-in 0.24s ease both !important;
+    animation: reduced-fade-in 0.42s ease both !important;
+  }
+  .experience.is-letter-open .letter-top {
+    animation-delay: 0.06s !important;
+  }
+  .experience.is-letter-open .letter-ornament {
+    animation-delay: 0.1s !important;
+  }
+  .experience.is-letter-open .letter-card h2 {
+    animation-delay: 0.14s !important;
+  }
+  .experience.is-letter-open .letter-body p {
+    animation: reduced-letter-copy-reveal 0.72s ease both !important;
+  }
+  .experience.is-letter-open .letter-body p:nth-child(1) {
+    animation-delay: 0.2s !important;
   }
   .experience.is-letter-open .letter-body p:nth-child(2) {
-    animation-delay: 0.08s !important;
+    animation-delay: 0.48s !important;
   }
   .experience.is-letter-open .letter-body p:nth-child(3) {
-    animation-delay: 0.16s !important;
+    animation-delay: 0.76s !important;
   }
   .experience.is-letter-open .signature {
-    animation-delay: 0.22s !important;
+    animation-delay: 1.04s !important;
+  }
+  .experience.is-letter-open .letter-footer {
+    animation-delay: 1.2s !important;
+  }
+  @keyframes reduced-letter-copy-reveal {
+    0% {
+      opacity: 0;
+      clip-path: inset(0 100% 0 0);
+      transform: translateX(-5px);
+    }
+    18% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 1;
+      clip-path: inset(0 0 0 0);
+      transform: translateX(0);
+    }
+  }
+}
+@media (min-width: 601px) and (prefers-reduced-motion: reduce) {
+  .letter-card {
+    transition:
+      opacity 1.1s ease,
+      transform 0.9s cubic-bezier(0.2, 0.72, 0.22, 1),
+      visibility 0s linear 1.1s !important;
+  }
+  .experience.is-letter-open .letter-card {
+    transition:
+      opacity 1.1s ease,
+      transform 0.9s cubic-bezier(0.2, 0.72, 0.22, 1),
+      visibility 0s linear !important;
+  }
+  .experience.is-letter-open .letter-top,
+  .experience.is-letter-open .letter-ornament,
+  .experience.is-letter-open .letter-card h2,
+  .experience.is-letter-open .signature,
+  .experience.is-letter-open .letter-footer {
+    animation-duration: 0.78s !important;
+  }
+  .experience.is-letter-open .letter-body p {
+    animation-duration: 1.08s !important;
+  }
+  .experience.is-letter-open .letter-body p:nth-child(1) {
+    animation-delay: 0.32s !important;
+  }
+  .experience.is-letter-open .letter-body p:nth-child(2) {
+    animation-delay: 0.88s !important;
+  }
+  .experience.is-letter-open .letter-body p:nth-child(3) {
+    animation-delay: 1.44s !important;
+  }
+  .experience.is-letter-open .signature {
+    animation-delay: 2.14s !important;
+  }
+  .experience.is-letter-open .letter-footer {
+    animation-delay: 2.42s !important;
   }
 }
 @keyframes reduced-fade-in {
@@ -1815,11 +1903,10 @@ html:not(.js) .flower-wishes {
   width: 58px;
   height: 58px;
   transform: translate(-50%, -50%);
-  border: 1px solid #f4d6ad75;
+  border: 1px solid transparent;
   border-radius: 50%;
-  background: #f7dfc214;
-  box-shadow: 0 0 22px #f5cbab45;
-  transform: translate(-50%, -50%);
+  background: transparent;
+  box-shadow: none;
   pointer-events: auto;
 }
 .flower-hotspot:hover,

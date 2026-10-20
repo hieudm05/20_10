@@ -29,17 +29,17 @@ function finishPageLoad(): void {
   if (pageLoadFinished || !document.documentElement.classList.contains('page-loading')) return;
   pageLoadFinished = true;
   if (pageLoadFallback) clearTimeout(pageLoadFallback);
-  const minimumDuration = reducedMotion.matches ? 1200 : 2600;
+  const minimumDuration = reducedMotion.matches ? 1900 : 2600;
   const remainingDuration = Math.max(0, minimumDuration - (performance.now() - pageLoadStartedAt));
   window.setTimeout(() => {
     document.documentElement.classList.add('page-entering');
     pageLoader?.classList.add('is-exiting');
     pageLoader?.setAttribute('aria-hidden', 'true');
     document.documentElement.classList.remove('page-loading');
-    window.setTimeout(() => pageLoader?.remove(), reducedMotion.matches ? 240 : 760);
+    window.setTimeout(() => pageLoader?.remove(), reducedMotion.matches ? 480 : 760);
     window.setTimeout(
       () => document.documentElement.classList.remove('page-entering'),
-      reducedMotion.matches ? 1000 : 2400,
+      reducedMotion.matches ? 1500 : 2400,
     );
   }, remainingDuration);
 }
@@ -58,10 +58,14 @@ const timeline = [
   { at: 0, state: 'ribbon_release' as const },
   { at: 0.55, state: 'flowers_separate' as const },
   { at: 6.35, state: 'letter_emerge' as const },
-  { at: 8.9, state: 'letter_open' as const },
-  { at: 10.1, state: 'wishes_reveal' as const },
+  { at: 8.9, desktopAt: 9.7, state: 'letter_open' as const },
+  { at: 10.1, desktopAt: 10.6, state: 'wishes_reveal' as const },
 ];
+const desktopViewport = matchMedia('(min-width: 601px)');
 const SEQUENCE_DURATION = 13;
+const REDUCED_MOBILE_SEQUENCE_FACTOR = 0.6;
+const sequenceFactor = () =>
+  reducedMotion.matches && !desktopViewport.matches ? REDUCED_MOBILE_SEQUENCE_FACTOR : 1;
 const wishMoments = flowerWishes.map((wish, index) => ({ wish, at: 0.9 + index * 1.12 }));
 let scene: BouquetScene | undefined;
 let sequenceStartedAt = 0;
@@ -128,19 +132,26 @@ function updateTimeline(now: number): void {
   timelineFrame = 0;
   if (!sequenceStartedAt || sequenceComplete || document.hidden) return;
   const elapsed = (now - sequenceStartedAt) / 1000;
-  const state = [...timeline].reverse().find((step) => elapsed >= step.at)?.state;
+  const factor = sequenceFactor();
+  const state = [...timeline].reverse().find((step) => {
+    const at =
+      desktopViewport.matches && 'desktopAt' in step && typeof step.desktopAt === 'number'
+        ? step.desktopAt
+        : step.at;
+    return elapsed >= at * factor;
+  })?.state;
   if (state) setSceneState(state);
-  if (elapsed >= 7) experience.classList.add('is-seal');
+  if (elapsed >= 7 * factor) experience.classList.add('is-seal');
 
-  while (nextWish < wishMoments.length && elapsed >= wishMoments[nextWish].at) {
+  while (nextWish < wishMoments.length && elapsed >= wishMoments[nextWish].at * factor) {
     fallingWish.classList.remove('is-visible');
     fallingWish.textContent = wishMoments[nextWish].wish.name;
     void fallingWish.offsetWidth;
     fallingWish.classList.add('is-visible');
     nextWish += 1;
   }
-  if (elapsed >= 6) fallingWish.classList.remove('is-visible');
-  if (elapsed >= SEQUENCE_DURATION) {
+  if (elapsed >= 6 * factor) fallingWish.classList.remove('is-visible');
+  if (elapsed >= SEQUENCE_DURATION * factor) {
     finishSequence();
     return;
   }
@@ -156,10 +167,6 @@ function startSequence(): void {
   experience.classList.add('is-started');
   setSceneState('ribbon_release');
   scene?.play(reducedMotion.matches);
-  if (reducedMotion.matches) {
-    finishSequence();
-    return;
-  }
   timelineFrame = requestAnimationFrame(updateTimeline);
 }
 
@@ -195,8 +202,7 @@ function replaySequence(): void {
       block: 'start',
     });
   });
-  if (reducedMotion.matches) finishSequence();
-  else timelineFrame = requestAnimationFrame(updateTimeline);
+  timelineFrame = requestAnimationFrame(updateTimeline);
 }
 trigger.addEventListener('click', startSequence);
 trigger.addEventListener('keydown', (event: KeyboardEvent) => {

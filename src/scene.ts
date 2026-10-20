@@ -10,6 +10,11 @@ export interface BouquetScene {
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 const SCENE_SEQUENCE_DURATION = 13;
+const SCENE_LETTER_OPEN_AT = 8.9;
+const DESKTOP_LETTER_OPEN_AT = 9.7;
+const REDUCED_MOBILE_SEQUENCE_FACTOR = 0.6;
+const REDUCED_FALL_DURATION = 7.4;
+const REDUCED_FALL_AFTER_COMPLETE = 4.4;
 const ease = (value: number) => {
   const t = clamp(value);
   return t * t * (3 - 2 * t);
@@ -22,6 +27,7 @@ const easeOut = (value: number) => {
 /** A procedural Alstonia scholaris bouquet made from instanced florets and leaves. */
 export function createBouquetScene(root: HTMLElement): BouquetScene {
   const mobile = matchMedia('(max-width: 600px)').matches;
+  const letterOpenAt = mobile ? SCENE_LETTER_OPEN_AT : DESKTOP_LETTER_OPEN_AT;
   const bouquetLift = mobile ? 0.4 : 0;
   const drawingCanvas = document.createElement('canvas');
   const context = drawingCanvas.getContext('webgl2', {
@@ -105,9 +111,7 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
         const across = (column / columns) * 2 - 1;
         const x = across * halfWidth;
         const centerRib = Math.max(0, 1 - Math.abs(across) * 7);
-        const z =
-          Math.sin(Math.PI * t) *
-          ((1 - Math.abs(across)) * 0.026 + centerRib * 0.024);
+        const z = Math.sin(Math.PI * t) * ((1 - Math.abs(across)) * 0.026 + centerRib * 0.024);
         positions.push(x, y, z);
         const edgeShade = Math.abs(across) * 0.12;
         colors.push(
@@ -452,6 +456,8 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
   const fallingClusterGeometry = makeFallingClusterGeometry();
   const fallingClusters: FallingCluster[] = [];
   const fallingClusterCount = mobile ? 24 : 36;
+  const reducedFallingClusterCount = mobile ? 12 : 18;
+  root.dataset.alstoniaReducedFallingClusters = String(reducedFallingClusterCount);
   const fallingClusterMesh = new THREE.InstancedMesh(
     fallingClusterGeometry,
     floretMat,
@@ -538,22 +544,26 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
 
   const envelope = new THREE.Group();
   scene.add(envelope);
+  const envelopeShell = new THREE.Group();
+  envelope.add(envelopeShell);
   const envelopeBack = standard(0xd5bb9b);
   const envelopeFace = standard(0xf5e7d1);
   const envelopeFold = standard(0xe9d3b6);
   const envelopeBase = new THREE.Mesh(new THREE.BoxGeometry(2.35, 1.55, 0.06), envelopeBack);
-  envelope.add(envelopeBase);
-  envelope.add(
+  envelopeShell.add(envelopeBase);
+  envelopeShell.add(
     makePolygon([-1.175, -0.775, 0.07, 0, 0.22, 0.11, 1.175, -0.775, 0.07], envelopeFace),
   );
-  envelope.add(
+  envelopeShell.add(
     makePolygon([-1.175, 0.775, 0.08, -1.175, -0.775, 0.08, 0, 0.06, 0.13], envelopeFold),
   );
-  envelope.add(makePolygon([1.175, 0.775, 0.08, 1.175, -0.775, 0.08, 0, 0.06, 0.13], envelopeFold));
+  envelopeShell.add(
+    makePolygon([1.175, 0.775, 0.08, 1.175, -0.775, 0.08, 0, 0.06, 0.13], envelopeFold),
+  );
   const flap = new THREE.Group();
   flap.position.set(0, 0.775, 0.02);
   flap.add(makePolygon([-1.175, 0, 0.08, 1.175, 0, 0.08, 0, -0.9, 0.1], envelopeFace));
-  envelope.add(flap);
+  envelopeShell.add(flap);
   const seal = new THREE.Mesh(
     new THREE.CylinderGeometry(0.28, 0.28, 0.05, 28),
     standard(0xb86e72, 0.38),
@@ -615,12 +625,18 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
   let active = false;
   let complete = false;
   let motionAllowed = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let reducedMode = !motionAllowed;
   let inView = true;
   let startedAt = 0;
   let completedAtAmbient = 0;
   let frame = 0;
   let lastFrame = 0;
   let letterSideFraction = 0.62;
+  let stageWidth = 0;
+  let stageHeight = 0;
+  let letterWidth = 0;
+  let letterHeight = 0;
+  const envelopeCenterRay = new THREE.Vector3();
   const fallback = document.getElementById('scene-fallback')!;
   const observer = new ResizeObserver(resize);
   const controller = new AbortController();
@@ -630,11 +646,14 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
     const { width, height } = root.getBoundingClientRect();
     if (!width || !height) return;
     const letterCard = document.getElementById('letter-card');
-    if (letterCard)
-      letterSideFraction = Math.min(
-        0.945,
-        letterCard.getBoundingClientRect().width / width + 0.055,
-      );
+    stageWidth = width;
+    stageHeight = height;
+    if (letterCard) {
+      const cardBounds = letterCard.getBoundingClientRect();
+      letterWidth = cardBounds.width;
+      letterHeight = cardBounds.height;
+      letterSideFraction = Math.min(0.945, cardBounds.width / width + 0.055);
+    }
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -645,6 +664,7 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
         : complete
           ? SCENE_SEQUENCE_DURATION
           : -1,
+      performance.now() / 1000,
     );
   }
 
@@ -707,42 +727,54 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
     if (disposed) return;
     const idle = time < 0;
     const storyTime = Math.max(0, time);
-    const tilt = idle ? 0 : ease(storyTime / 0.55);
-    const orbit = idle ? 0 : ease((storyTime - 3.55) / 0.75) * (1 - ease((storyTime - 6.1) / 1.05));
-    const push = idle ? 0 : ease(storyTime / 1.35) * (1 - ease((storyTime - 6.15) / 1.1));
+    const movement = reducedMode ? 0.5 : 1;
+    const ambienceMotion = reducedMode ? 0 : ambience;
+    const tilt = idle ? 0 : ease(storyTime / 0.55) * movement;
+    const orbit = idle
+      ? 0
+      : ease((storyTime - 3.55) / 0.75) * (1 - ease((storyTime - 6.1) / 1.05)) * movement;
+    const push = idle
+      ? 0
+      : ease(storyTime / 1.35) * (1 - ease((storyTime - 6.15) / 1.1)) * movement;
     camera.position.set(
-      Math.sin(orbit * Math.PI) * 0.42 + Math.sin(ambience * 0.12) * 0.05,
-      0.05 + Math.sin(orbit * Math.PI * 2) * 0.1 + Math.sin(ambience * 0.3) * 0.025,
-      8.7 - push * 1.08 + Math.sin(ambience * 0.22) * 0.025,
+      Math.sin(orbit * Math.PI) * 0.42 + Math.sin(ambienceMotion * 0.12) * 0.05 * movement,
+      0.05 +
+        Math.sin(orbit * Math.PI * 2) * 0.1 * movement +
+        Math.sin(ambienceMotion * 0.3) * 0.025 * movement,
+      8.7 - push * 1.08 + Math.sin(ambienceMotion * 0.22) * 0.025 * movement,
     );
     camera.lookAt(0, -0.05, 0);
-    bouquet.position.y = bouquetLift + Math.sin(ambience * 0.62) * 0.035;
+    bouquet.position.y = bouquetLift + Math.sin(ambienceMotion * 0.62) * 0.035 * movement;
     bouquet.rotation.z = idle
-      ? Math.sin(ambience * 0.42) * 0.015
-      : -0.085 * tilt + Math.sin(ambience * 0.48) * 0.012;
+      ? Math.sin(ambienceMotion * 0.42) * 0.015 * movement
+      : -0.085 * tilt + Math.sin(ambienceMotion * 0.48) * 0.012 * movement;
     bouquet.rotation.y = idle
-      ? Math.sin(ambience * 0.37) * 0.018
-      : 0.07 * tilt + Math.sin(ambience * 0.37) * 0.012;
+      ? Math.sin(ambienceMotion * 0.37) * 0.018 * movement
+      : 0.07 * tilt + Math.sin(ambienceMotion * 0.37) * 0.012 * movement;
     sprigs.forEach((sprig, index) => {
       const { group, trail, trailPositions, start, flight } = sprig;
       const rawProgress = idle ? 0 : clamp((storyTime - start) / 2.35);
       const fall = easeOut(rawProgress);
       if (idle) {
         group.position.copy(sprig.initialPosition);
-        group.position.y += Math.sin(ambience * 0.62 + index) * 0.018;
-      } else group.position.copy(flight.getPoint(fall));
+        group.position.y += Math.sin(ambienceMotion * 0.62 + index) * 0.018 * movement;
+      } else {
+        group.position.copy(sprig.initialPosition).lerp(flight.getPoint(fall), movement);
+      }
       group.rotation.z =
         sprig.initialRotation +
-        (sprig.targetRotation - sprig.initialRotation) * fall +
-        Math.sin(fall * Math.PI * 2.4) * 0.12 * fall * (1 - fall) +
-        (idle ? Math.sin(ambience * 0.48 + index) * 0.012 : 0);
-      group.rotation.x = Math.sin(fall * Math.PI * 2 + index * 0.8) * 0.11 * fall * (1 - fall);
-      group.rotation.y = Math.sin(fall * Math.PI * 2.7 + index) * 0.14 * fall * (1 - fall);
+        (sprig.targetRotation - sprig.initialRotation) * fall * movement +
+        Math.sin(fall * Math.PI * 2.4) * 0.12 * fall * (1 - fall) * movement +
+        (idle ? Math.sin(ambienceMotion * 0.48 + index) * 0.012 * movement : 0);
+      group.rotation.x =
+        Math.sin(fall * Math.PI * 2 + index * 0.8) * 0.11 * fall * (1 - fall) * movement;
+      group.rotation.y =
+        Math.sin(fall * Math.PI * 2.7 + index) * 0.14 * fall * (1 - fall) * movement;
       const scale = 1 - (1 - sprig.landingScale) * fall;
       group.scale.setScalar(scale);
 
       const trailAttr = trail.geometry.getAttribute('position') as THREE.BufferAttribute;
-      trail.visible = !idle && rawProgress > 0.035 && rawProgress < 1.08;
+      trail.visible = !reducedMode && !idle && rawProgress > 0.035 && rawProgress < 1.08;
       if (trail.visible) {
         (trail.material as THREE.PointsMaterial).opacity =
           0.54 * (1 - ease((rawProgress - 0.7) / 0.38));
@@ -756,12 +788,14 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
         trailAttr.needsUpdate = true;
       }
     });
-    const opening = ease((storyTime - 3.4) / 1.65);
+    const openingDuration = reducedMode ? 2 : 1.65;
+    const opening = ease((storyTime - 3.4) / openingDuration);
     wrapLeft.rotation.y = -opening * 1.1;
     wrapLeft.rotation.z = -opening * 0.27;
     wrapRight.rotation.y = opening * 1.1;
     wrapRight.rotation.z = opening * 0.27;
-    const ribbonRelease = ease((storyTime - 0.16) / 1.65);
+    const ribbonDuration = reducedMode ? 2 : 1.65;
+    const ribbonRelease = ease((storyTime - 0.16) / ribbonDuration);
     ribbon.position.set(
       -1.5 * ribbonRelease,
       -1.05 - Math.sin(ribbonRelease * Math.PI) * 0.38,
@@ -769,57 +803,101 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
     );
     ribbon.rotation.set(ribbonRelease * 0.8, -ribbonRelease * 1.1, ribbonRelease * 2.4);
     wrapLeft.visible = wrapRight.visible = ribbon.visible = backing.visible = true;
-    const slide = easeOut((storyTime - 5.55) / 1.5);
+    const slideDuration = reducedMode ? 1.8 : 1.5;
+    const slide = easeOut((storyTime - 5.55) / slideDuration);
+    root.dataset.alstoniaEnvelopeSlide = slide.toFixed(2);
     envelope.visible = storyTime >= 5.42;
-    envelope.position.set(0, -1.1 + slide * 1.4, 0.68 + slide * 0.9);
+    const envelopeZ = 0.68 + slide * 0.9;
+    if (mobile) {
+      envelope.position.set(0, -1.1 + slide * 1.4, envelopeZ);
+      envelopeShell.scale.set(1, 1, 1);
+    } else {
+      envelopeCenterRay.set(0, 0, -1).applyQuaternion(camera.quaternion);
+      const centerDistance = (envelopeZ - camera.position.z) / envelopeCenterRay.z;
+      envelope.position.set(
+        camera.position.x + envelopeCenterRay.x * centerDistance,
+        camera.position.y + envelopeCenterRay.y * centerDistance,
+        envelopeZ,
+      );
+      const envelopeViewHeight =
+        2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * centerDistance;
+      const envelopeViewWidth = envelopeViewHeight * camera.aspect;
+      const envelopeWidthPx = Math.min(stageWidth - 12, letterWidth + 52);
+      const envelopeHeightPx = Math.min(stageHeight - 12, letterHeight + 42);
+      envelopeShell.scale.set(
+        (envelopeWidthPx / stageWidth) * (envelopeViewWidth / 2.35),
+        (envelopeHeightPx / stageHeight) * (envelopeViewHeight / 1.55),
+        1,
+      );
+    }
     envelope.rotation.set(
       Math.sin(orbit * Math.PI) * 0.12,
       Math.sin(orbit * Math.PI) * 0.22,
       -0.12 * (1 - slide),
     );
-    const shine = ease((storyTime - 6.65) / 0.95);
+    const shine = ease((storyTime - 6.65) / 0.95) * movement;
     (glow.material as THREE.SpriteMaterial).opacity =
       shine * (1 - ease((storyTime - 8.15) / 0.95)) * 0.56;
     sealRing.scale.setScalar(1 + Math.sin(ambience * 1.4) * 0.025 + shine * 0.16);
-    const unfold = ease((storyTime - 7.1) / 1.75);
+    const unfoldDuration = mobile ? (reducedMode ? 1.78 : 1.75) : 2.6;
+    const unfold = ease((storyTime - 7.1) / unfoldDuration);
+    root.dataset.alstoniaLetterUnfold = unfold.toFixed(2);
     flap.rotation.x = -unfold * 2.6;
     innerLetter.position.y = -0.24 + unfold * 0.4;
     innerLetterFold.rotation.x = Math.PI * (1 - unfold);
 
-    const timeAfterLetterOpen = idle || storyTime < 8.9 ? -1 : storyTime - 8.9;
-    const fallingClock = complete
-      ? 1.28 + Math.max(0, ambience - completedAtAmbient)
+    const timeAfterLetterOpen = idle || storyTime < letterOpenAt ? -1 : storyTime - letterOpenAt;
+    const reducedFallingClock = complete
+      ? SCENE_SEQUENCE_DURATION - letterOpenAt + Math.max(0, ambience - completedAtAmbient)
       : timeAfterLetterOpen;
+    const fallingClock = reducedMode
+      ? reducedFallingClock
+      : complete
+        ? 1.28 + Math.max(0, ambience - completedAtAmbient)
+        : timeAfterLetterOpen;
     if (fallingClock >= 0) {
       const viewHeight = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 8.7;
       const halfWidth = (viewHeight * camera.aspect) / 2;
       fallingClusters.forEach((cluster, index) => {
-        const localTime = fallingClock - cluster.delay;
-        if (localTime < 0) {
+        if (reducedMode && index >= reducedFallingClusterCount) {
           fallingTransform.position.set(0, -100, 0);
           fallingTransform.scale.setScalar(0);
           fallingTransform.updateMatrix();
           fallingClusterMesh.setMatrixAt(index, fallingTransform.matrix);
           return;
         }
-        const progress = (localTime % cluster.duration) / cluster.duration;
+        const localTime = fallingClock - cluster.delay;
+        if (localTime < 0 || (reducedMode && localTime >= REDUCED_FALL_DURATION)) {
+          fallingTransform.position.set(0, -100, 0);
+          fallingTransform.scale.setScalar(0);
+          fallingTransform.updateMatrix();
+          fallingClusterMesh.setMatrixAt(index, fallingTransform.matrix);
+          return;
+        }
+        const duration = reducedMode ? REDUCED_FALL_DURATION : cluster.duration;
+        const progress = reducedMode
+          ? clamp(localTime / duration)
+          : (localTime % duration) / duration;
         const edgeIn = ease(progress / 0.13);
         const edgeOut = 1 - ease((progress - 0.82) / 0.16);
         const flutter = Math.sin(progress * Math.PI * 2 + cluster.delay * 4);
         const sideFraction = Math.min(0.97, letterSideFraction + cluster.offset);
         const gravity = progress * progress;
         fallingTransform.position.set(
-          cluster.side * halfWidth * sideFraction + flutter * halfWidth * cluster.sway,
-          viewHeight * cluster.startHeight - gravity * viewHeight * 1.15,
+          cluster.side * halfWidth * sideFraction +
+            flutter * halfWidth * cluster.sway * (reducedMode ? 0.45 : 1),
+          viewHeight * cluster.startHeight - gravity * viewHeight * (reducedMode ? 0.86 : 1.15),
           cluster.depth + Math.sin(progress * Math.PI * 2.5 + cluster.delay) * 0.07,
         );
         fallingTransform.rotation.set(
-          0.42 + flutter * 0.42,
-          Math.sin(progress * Math.PI * 2.2 + cluster.delay) * 0.48,
-          progress * Math.PI * 2.7 + cluster.delay,
+          0.42 + flutter * 0.42 * movement,
+          Math.sin(progress * Math.PI * 2.2 + cluster.delay) * 0.48 * movement,
+          progress * Math.PI * 2.7 * movement + cluster.delay,
         );
         fallingTransform.scale.setScalar(
-          progress < 0.985 ? cluster.scale * Math.min(edgeIn, edgeOut) : 0,
+          progress < 0.985
+            ? cluster.scale * (reducedMode ? 0.78 : 1) * Math.min(edgeIn, edgeOut)
+            : 0,
         );
         fallingTransform.updateMatrix();
         fallingClusterMesh.setMatrixAt(index, fallingTransform.matrix);
@@ -842,6 +920,15 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
     if (disposed || document.hidden || !inView || !motionAllowed) return;
     if (now - lastFrame > 32) {
       lastFrame = now;
+      if (
+        complete &&
+        reducedMode &&
+        now / 1000 - completedAtAmbient >= REDUCED_FALL_AFTER_COMPLETE
+      ) {
+        motionAllowed = false;
+        render(SCENE_SEQUENCE_DURATION, now / 1000);
+        return;
+      }
       if (active && now - startedAt >= SCENE_SEQUENCE_DURATION * 1000) {
         active = false;
         complete = true;
@@ -866,12 +953,14 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
     active = false;
     complete = true;
     completedAtAmbient = performance.now() / 1000;
+    if (reducedMode) motionAllowed = true;
     cancelAnimationFrame(frame);
     frame = 0;
     render(SCENE_SEQUENCE_DURATION, performance.now() / 1000);
     wake();
   }
   observer.observe(root);
+  observer.observe(document.getElementById('letter-card')!);
   document.addEventListener(
     'visibilitychange',
     () => {
@@ -885,6 +974,7 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
             : complete
               ? SCENE_SEQUENCE_DURATION
               : -1,
+          performance.now() / 1000,
         );
         wake();
       }
@@ -946,11 +1036,10 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
   }
   return {
     play(reduced, elapsed = 0) {
-      if (reduced) {
-        finish();
-        return;
-      }
-      startedAt = performance.now() - elapsed * 1000;
+      reducedMode = reduced;
+      motionAllowed = true;
+      const storyTimeScale = reduced && mobile ? 1 / REDUCED_MOBILE_SEQUENCE_FACTOR : 1;
+      startedAt = performance.now() - elapsed * storyTimeScale * 1000;
       active = true;
       complete = false;
       completedAtAmbient = 0;
@@ -959,6 +1048,7 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
     finish,
     setMotion(enabled) {
       motionAllowed = enabled;
+      reducedMode = !enabled;
       if (enabled) wake();
       else {
         cancelAnimationFrame(frame);
@@ -969,6 +1059,7 @@ export function createBouquetScene(root: HTMLElement): BouquetScene {
             : complete
               ? SCENE_SEQUENCE_DURATION
               : -1,
+          performance.now() / 1000,
         );
       }
     },
